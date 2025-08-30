@@ -44,7 +44,7 @@ watch([searchQuery, selectedGenre], () => {
       />
 
       <select v-model="selectedGenre">
-        <option disabled value="">Genres</option>
+        <option value="">All Genres</option>
         <option v-for="(genre, index) in genres" :key="index" :value="genre">{{ genre }}</option>
       </select>
     </div>

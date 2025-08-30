@@ -1,27 +1,25 @@
-<script setup lang="ts">
+<script setup>
 import {ref} from "vue";
 import MovieCardComponent from "../components/MovieCardComponent.vue";
 import PrimaryTag from "../components/PrimaryTag.vue";
 import PrimaryButton from "../components/PrimaryButton.vue";
-import {createMovie, getAllMovies} from "../routes/routes";
+import {createMovie} from "../routes/routes";
 import router from "../router";
 
-const movieTitle = ref();
-const movieGenre = ref();
-const movieDuration = ref();
-const moviePrice = ref();
-const movieDistributor = ref();
-const movieImage = ref();
-const movieDescription = ref();
-const ageRestriction = ref();
-const viewType = ref();
+const movieTitle = ref("");
+const movieGenre = ref("");
+const movieDuration = ref("");
+const moviePrice = ref("");
+const movieDistributor = ref("");
+const movieImage = ref("");
+const movieDescription = ref("");
+const ageRestriction = ref("");
+const viewType = ref("");
 
 function onFileChange(e) {
   const file = e.target.files[0];
   const reader = new FileReader();
   reader.onload = () => {
-    // reader.result will look like "data:image/png;base64,iVBORw0..."
-    // We only want the Base64 part after the comma
     movieImage.value = reader.result.split(",")[1];
   };
   reader.readAsDataURL(file);
@@ -43,18 +41,9 @@ async function onSubmit() {
   try {
     const data = await createMovie(movie);
     alert("Movie created!");
-    await getAllMovies();
     router.push(`/movie/${data.movieId}`);
 
-    movieTitle.value = '';
-    movieGenre.value = '';
-    movieDuration.value = '';
-    moviePrice.value = '';
-    movieDistributor.value = '';
-    movieImage.value = '';
-    movieDescription.value = '';
-    ageRestriction.value = '';
-    viewType.value = '';
+
   } catch (err) {
     console.error("Failed to create movie:", err);
     alert("Failed to create movie: " + err.message);
