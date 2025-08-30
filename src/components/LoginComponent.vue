@@ -1,27 +1,39 @@
 <script setup>
 import { ref } from 'vue';
 import PrimaryButton from "../components/PrimaryButton.vue";
-import {getAllUsersByEmail, getUserDetails} from "../routes/routes.js";
+import { getUserDetails } from "../routes/routes.js";
+import router from "../router";
 
-const email = ref("");
+const userId = ref("");
 const password = ref("");
 
-const user = ref([]);
+const user = ref(null);
 
-//TODO: refactor email to userID (On UI as well)
-//TODO: authenticate user password with user input for password
-//TODO: if authenticated, route user to profile page. Reference EditMovieDetailsPage:onSubmit() 'router.push'. route to "/movies"
+async function validateUser() {
+  try {
 
-async function validateUser(){
-  user.value = await getUserDetails(email.value);
+    user.value = await getUserDetails(userId.value);
 
-  authenticateUser();
+    if (!user.value) {
+      alert("User not found");
+      return;
+    }
+
+    authenticateUser();
+  } catch (err) {
+    console.error("Error validating user:", err);
+    alert("Something went wrong while validating user.");
+  }
 }
 
-function authenticateUser(){
-  user.value.password;
-}
+function authenticateUser() {
+  if (user.value.password === password.value) {
 
+    router.push("/user-details");
+  } else {
+    alert("Invalid password, please try again.");
+  }
+}
 </script>
 
 <template>
@@ -29,14 +41,14 @@ function authenticateUser(){
     <div class="login-container">
       <h2>Login</h2>
 
-      <form @submit.prevent="handleLogin" class="login-form">
-        <label for="email">User ID</label>
+      <form @submit.prevent="validateUser" class="login-form">
+        <label for="userId">User ID</label>
         <input
             class="form-control"
-            id="email"
-            v-model="email"
+            id="userId"
+            v-model="userId"
             type="text"
-            placeholder="Enter your email or username"
+            placeholder="Enter your User ID"
         />
 
         <label for="password">Password</label>
@@ -53,11 +65,7 @@ function authenticateUser(){
           <a href="#">Privacy Policy</a>.
         </p>
 
-
-        <PrimaryButton
-            button-text="Login"
-            @click="validateUser"
-        />
+        <PrimaryButton button-text="Login" @click="validateUser" />
 
         <p class="signup-text">
           Don’t have an account?
@@ -85,7 +93,6 @@ function authenticateUser(){
 }
 
 h2 {
-
   margin-bottom: 20px;
   color: white;
 }
