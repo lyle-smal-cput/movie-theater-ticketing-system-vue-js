@@ -1,13 +1,13 @@
 <script setup>
 import {useRoute} from "vue-router";
-import {
-  getMovieById,
-  getAllBranches,
-  getAllTheatersByBranchId,
-  getMoviesByGenre,
-  createSchedule,
-  getAllSeatsByTheaterRoomIdAndAvailability
-} from "../routes/routes.js";
+import {getMovieById, getAllBranches, 
+        getAllTheatersByBranchId, 
+        getMoviesByGenre, 
+        createSchedule, 
+        getAllSeatsByTheaterRoomIdAndAvailability, 
+        createCart, 
+        getCustomerDetails, 
+        getCartByUserId, getAllCartItemsByCartId} from "../routes/routes.js";
 import {onBeforeMount, onMounted, ref, watch} from "vue";
 import PrimaryTag from "../components/PrimaryTag.vue";
 import SecondaryTag from "../components/SecondaryTag.vue";
@@ -18,6 +18,7 @@ import PaywallComponent from "../components/PaywallComponent.vue";
 import router from "../router/index.js";
 import MovieCardComponent from "../components/MovieCardComponent.vue";
 import OrderPDF from "../components/OrderPDF.vue";
+import {createCartItem} from "../routes/routes.js";
 
 const route = useRoute(); //gets the route path
 
@@ -44,6 +45,80 @@ const selectedTicketQuantity = ref(null);
 const exceedsTicketLimit = ref(false);
 
 const showPaywall = ref(false);
+const cartId = localStorage.getItem("cartId");
+const userId = localStorage.getItem("authenticatedUserId");
+
+// To add movie to cart
+async function addToCart() {
+  try {
+    if (!userId) {
+      alert("User not logged in.");
+      return;
+    }
+
+    //To retrieve customer details
+    const customer = await getCustomerDetails(userId); 
+
+    //To retrieve user's cart
+    let cart = await getCartByUserId(userId); 
+
+    // If no cart exists, create one
+    if (!cart || !(cart.id || cart.cartId)) {
+      cart = await createCart({ userId });
+      if (!cart || !(cart.id || cart.cartId)) {
+        alert("Could not create a cart for this user.");
+        return;
+      }
+    }
+
+    const cartId = cart.id || cart.cartId;
+
+    //To retrieve all cart items
+    let cartItems = [];
+    try {
+      const response = await getAllCartItemsByCartId(cartId);
+      cartItems = Array.isArray(response) ? response : [];
+    } catch (err) {
+      console.warn("Could not fetch cart items:", err);
+      cartItems = [];
+    }
+
+    //To prevent duplicates by check if the movies is already in the cart
+    const existingItem = cartItems.find(item => item.movieTitle === movie.value.title);
+    if (existingItem) {
+      alert("This movie is already in your cart!");
+      return;
+    }
+
+    //To create cart item
+    const cartItem = { 
+      cart: cart, 
+      customer: customer, 
+      quantity: selectedTicketQuantity.value, 
+      price: movie.value.price * selectedTicketQuantity.value, 
+      movieTitle: movie.value.title,
+      image: movie.value.image,
+      seats: seatsSelected.value,
+    }; 
+
+    await createCartItem(cartItem); 
+    alert("Movie added to cart!");
+    router.push("/cart");
+    resetForm();
+  } catch (err) {
+    console.error("Error adding movie to cart:", err);
+    alert("Something went wrong. Please try again.");
+  }
+}
+
+//To reset the form after adding movie to cart
+function resetForm(){
+  selectedBranchId.value = defaultBranchText.value;
+  selectedTheaterId.value = defaultTheaterText.value;
+  selectedTicketQuantity.value = null;
+  seatsSelected.value = [];
+}
+
 
 async function checkout(){
   const schedule = {
@@ -287,7 +362,9 @@ function redirect(id){
     </div>
 
     <PrimaryButton v-if="!viewSummary" class="checkout-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" @click="toggleTicketSummary()" button-text="Confirm"/>
-    <PrimaryButton v-else class="checkout-button" button-text="Checkout" @click="checkout()"/>
+    <PrimaryButton v-else class="cart-button" button-text="Add to Cart" @click="addToCart(movie, 1)"/>
+    <!--<PrimaryButton v-else class="checkout-button" button-text="Checkout" @click="checkout()"/>-->
+
   </div>
   <AdminControlsComponent v-if="isAdmin==='true'" button-text="Edit Movie" @click="redirect(movieId)"/>
 </div>

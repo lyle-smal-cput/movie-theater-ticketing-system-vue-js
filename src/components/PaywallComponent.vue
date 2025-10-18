@@ -17,6 +17,11 @@ const cvv = ref();
 const expiryDate = ref();
 
 async function onPayNow(){
+
+  if (!cardHolderName.value || !cardNumber.value || !cvv.value || !expiryDate.value) {
+    alert("Please fill in all payment details.");
+    return;
+  }
   const payload = {
     card: {
       cardHolderName: cardHolderName.value,
@@ -68,8 +73,8 @@ async function onPayNow(){
     <div class="paywall-container">
       <div class="paywall-header">
         <h1>Paywall</h1>
-        <span>{{numberOfTickets}} x Tickets for {{movieTitle}} @ R{{totalAmount}}</span>
-        <primaryButton @click="$emit('close')">X</primaryButton>
+        <span class="ticket-info">{{numberOfTickets}} x Tickets for {{movieTitle}} @ R{{totalAmount}}</span>
+        <!--<primaryButton @click="$emit('close')">X</primaryButton>-->
       </div>
 
       <input type="text" class="form-control" placeholder="Cardholder Name" v-model="cardHolderName">
@@ -94,7 +99,7 @@ async function onPayNow(){
 
 <style scoped>
 
-.overlay {
+/*.overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -105,9 +110,20 @@ async function onPayNow(){
   justify-content: center;
   align-items: center;
   z-index: 1000;
-}
+}*/
 
 .paywall-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+  background-color: #141414;
+  border: 2px solid #00FF7F;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.7);
+}
+
+/*.paywall-container {
   background-color: #141414;
   border: 2px solid #00FF7F;
   border-radius: 5px;
@@ -115,17 +131,26 @@ async function onPayNow(){
   width: 60%;
   height: 50vh;
   box-shadow: 0 0 20px rgba(0,0,0,0.7);
-}
+}*/
 
 .paywall-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   border-bottom: 2px solid #00FF7F;
   padding-bottom: 10px;
   margin-bottom: 20px;
   font-size: 18px;
   font-weight: bold;
+}
+
+h1{
+  text-align: center;
+}
+
+.ticket-info {
+  margin-top: 5px;
+  font-size: 16px;
+  color: #ccc;
 }
 
 .form-control {

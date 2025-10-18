@@ -298,3 +298,26 @@ export async function deleteCart(id) {
     });
 }
 
+export async function createCartItem(cartItem) {
+    const res = await fetch("http://localhost:8080/cartItem/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cartItem)
+    });
+    return await res.json();
+}
+
+export async function getAllCartItemsByCartId(cartId) {
+    const res = await fetch(`http://localhost:8080/cartItem/getAll/${cartId}`);
+    const data = await res.json();
+    return data;
+}
+
+export async function deleteCartItem(id) {
+    await fetch(`http://localhost:8080/cartItem/delete/${id}`, {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"},
+    });
+}
+
+

@@ -13,8 +13,12 @@
       <PrimaryButton v-if="userId===null" link="/login" button-text="Login" />
       <PrimaryButton v-if="userId===null" link="/signup" button-text="Sign Up" />
 
+      <a @click="router.push('/cart')">
+        <i class="fas fa-shopping-cart"></i>
+      </a>
       <a v-if="userId!==null" @click="router.push('/user-details')">
         <i class="fas fa-user"></i>
+
         <PrimaryTag v-if="userId" :label="username"/>
       </a>
 
@@ -44,10 +48,7 @@ function setUserDetails(loggedIn = true){
   isAdmin.value = localStorage.getItem('isAdmin') === 'true';
   }
   else{
-    localStorage.removeItem('username');
-    localStorage.removeItem('isAdmin');
-    localStorage.removeItem('authenticatedUserId');
-    localStorage.removeItem('cartId');
+   localStorage.clear();
     userId.value = null;
     username.value = null;
     isAdmin.value = undefined;

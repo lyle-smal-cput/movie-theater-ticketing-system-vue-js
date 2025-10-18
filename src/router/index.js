@@ -15,6 +15,8 @@ import AdminActionsPage from "../pages/AdminActionsPage.vue";
 import CreateBranchPage from "../pages/CreateBranchPage.vue";
 import CreateTheaterPage from "../pages/CreateTheaterPage.vue";
 import CreateSeatPage from "../pages/CreateSeatPage.vue";
+import CartPage from '../pages/CartPage.vue';
+import CheckoutPage from '../pages/CheckoutPage.vue';
 import {ref} from "vue";
 
 
@@ -37,6 +39,8 @@ const routes = [
     { path: '/terms-and-conditions', name: "TermsAndConditionsPage", component: TermsAndConditionsPage },
     {path: '/about-us',name:"AboutUsPage",component: AboutUsPage},
     {path: '/CRUD/:id',name:"AdminActionsPage",component: AdminActionsPage},
+    {path: '/cart', name: "CartPage", component: CartPage},
+    {path: '/checkout', name: "CheckoutPage", component: CheckoutPage},
     { path: '/:catchAll(.*)*', name: "PageNotFound", component: PageNotFound}, //This catches our error page not found
 
 ];
