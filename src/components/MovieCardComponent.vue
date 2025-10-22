@@ -24,22 +24,22 @@ function redirect(id){
 
 <template>
   <div class="card">
-    <a @click="redirect(id)">
+    <router-link :to="`/movie/${id}`">
+      <img v-if="image" :src="'data:image/jpeg;base64,' + image" class="card-img-top" alt="...">
+      <img v-else src="/src/assets/no-photo.jpg" class="card-img-top" alt="...">
 
-    <img v-if="image" :src="'data:image/jpeg;base64,' + image" class="card-img-top" alt="...">
-    <img v-else src="/src/assets/no-photo.jpg" class="card-img-top" alt="...">
-
-    <div class="card-body">
-      <div class="my-card-header">
-        <h5 class="card-title">{{ title }}</h5>&nbsp;
-        <PrimaryTag v-if="viewType==='3D'" :label="viewType"/>
+      <div class="card-body">
+        <div class="my-card-header">
+          <h5 class="card-title">{{ title }}</h5>&nbsp;
+          <PrimaryTag v-if="viewType==='3D'" :label="viewType"/>
+        </div>
+        <p>{{ genre }}</p>
+        <PrimaryButton v-if="!disableButton" buttonText="View Now"/>
       </div>
-      <p>{{ genre }}</p>
-      <PrimaryButton v-if="!disableButton" buttonText="View Now" @click="redirect(id)"/>
-    </div>
-    </a>
+    </router-link>
   </div>
 </template>
+
 
 <style scoped>
 .card{

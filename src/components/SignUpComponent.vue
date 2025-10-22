@@ -47,13 +47,17 @@ async function createUser() {
       localStorage.setItem("authenticatedUserId", data.userId);
       localStorage.setItem("isAdmin", isAdmin.value);
       localStorage.setItem("username", data.username);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
 
       // Create a cart
       const cartObject = {
         quantity: 0,
         customer: { userId: data.userId},
       }
-      const cart = await createCart(cartObject);
+
+      const token = localStorage.getItem("token");
+      const cart = await createCart(cartObject, token);
       localStorage.setItem("cartId", cart.cartId);
 
       alert("Customer account created successfully!");
@@ -68,6 +72,9 @@ async function createUser() {
       localStorage.setItem("authenticatedUserId", data.userId);
       localStorage.setItem("isAdmin", isAdmin.value);
       localStorage.setItem("username", data.username);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+
       alert("Admin account created successfully!");
       await router.push("/movies");
     } catch (err) {

@@ -8,7 +8,9 @@ defineProps({
 </script>
 
 <template>
-  <a v-if="link" @click="router.push(link)" class="btn btn-primary">{{ buttonText }} <slot/></a>
+  <router-link v-if="link" :to="link" class="btn btn-primary">
+    {{ buttonText }}
+  </router-link>
   <a v-else class="btn btn-primary">{{ buttonText }} <slot/></a>
 </template>
 

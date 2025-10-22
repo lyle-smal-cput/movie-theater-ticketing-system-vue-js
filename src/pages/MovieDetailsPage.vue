@@ -216,8 +216,8 @@ watch(selectedTicketQuantity, async(ticketQuantity)=>{
   seatsSelected.value = [];
 })
 
-function redirect(id){
-  router.push(`/movie/edit/${id}`);
+async function redirect(id){
+  await router.push(`/movie/edit/${id}`);
 }
 </script>
 

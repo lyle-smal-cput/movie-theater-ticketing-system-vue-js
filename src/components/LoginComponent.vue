@@ -19,6 +19,11 @@ async function validateUser() {
     localStorage.setItem("username", response.username);
     localStorage.setItem("role", response.role);
     localStorage.setItem("token", response.token);
+    if (response.role === "ADMIN") {
+      localStorage.setItem("isAdmin", true);
+    } else {
+      localStorage.setItem("isAdmin", false);
+    }
 
     alert("Login successful!");
 

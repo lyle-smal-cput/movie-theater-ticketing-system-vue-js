@@ -58,18 +58,20 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const authenticatedUserId = localStorage.getItem("authenticatedUserId");
-    const isAdmin = ref(localStorage.getItem("role") === 'ADMIN');
+    const role = localStorage.getItem("role");
 
-    // Redirect to /movies if not authenticated
-    if (!authenticatedUserId && to.path !== "/login" && to.path !== "/signup" && to.path !== "/privacy-policy" && to.path !== "/terms-and-conditions") {
+    // Not logged in → redirect to login
+    if (!authenticatedUserId && !["/login","/signup","/privacy-policy","/terms-and-conditions"].includes(to.path)) {
         next("/login");
     }
-    else if (isAdmin.value && to.path.includes("/CRUD")) {
-        next("/:catchAll(.*)*"); // redirect back
+    // Only allow admins for /CRUD routes
+    else if (to.path.startsWith("/CRUD") && role !== "ADMIN") {
+        next("/movies"); // redirect non-admins to movies
     }
     else {
         next();
     }
 });
+
 
 export default router;

@@ -31,7 +31,7 @@
           <i class="fa fa-trash"></i>
         </PrimaryButton>
         <PrimaryButton v-if="disabledActions && domain==='admin'" button-text="View Profile" link="/user-details"/>
-        <DialogComponent :id="`dialog-${id}`" @confirm="deleteObject(id)" title="Deletion" :message="`Do you want to delete this ${domain}: ${label}?`" primary-text="Delete" secondary-text="Cancel"/>
+        <DialogComponent :id="`dialog-${id}`" @confirm="() => deleteObject(id)" title="Deletion" :message="`Do you want to delete this ${domain}: ${label}?`" primary-text="Delete" secondary-text="Cancel"/>
       </div>
 
   </div>
